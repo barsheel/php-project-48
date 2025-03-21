@@ -1,0 +1,19 @@
+{
+    "name": "hexlet/code",
+    "description": "2 project",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Hexlet\\Code\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "barsheel",
+            "email": "barsheel@gmail.com"
+        }
+    ],
+    "require": {
+        "docopt/docopt": "^1.0"
+    }
+}
