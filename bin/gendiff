@@ -9,6 +9,8 @@ if (file_exists($autoloadPath1)) {
     require_once $autoloadPath2;
 }
 
+use function Php\Project48\Gendiff\printArray;
+use function Php\Project48\Gendiff\parseJsonFile;
 
 $doc = <<<DOC
 Generate diff
@@ -17,7 +19,6 @@ Usage:
   gendiff (-h|--help)
   gendiff (-v|--version)
   gendiff [--format <fmt>] <firstFile> <secondFile>
-
 Options:
   -h --help                     Show this screen
   -v --version                  Show version
@@ -25,7 +26,17 @@ Options:
 DOC;
 
 $args = Docopt::handle($doc, array('version'=>'version 1.0'));
-foreach ($args as $k=>$v)
-    echo $k.': '.json_encode($v).PHP_EOL;
 
-echo "hello, world!";
+//print args
+/*
+foreach ($args as $k=>$v) {
+    echo $k.': '.json_encode($v).PHP_EOL;
+}
+*/
+
+if ($args["<firstFile>"] && $args["<secondFile>"]) {
+    print_r("\n{$args["<firstFile>"]}:\n");
+    printArray(parseJsonFile((string) $args["<firstFile>"]));
+    print_r("\n{$args["<secondFile>"]}:\n");
+    printArray(parseJsonFile((string) $args["<secondFile>"]));
+  }
