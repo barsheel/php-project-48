@@ -1,2 +1,12 @@
 gendiff:
-	bin/gendiff
+	bin/gendiffphp
+
+install:
+	composer install
+	composer dump-autoload
+	composer validate
+
+lint:
+	composer exec --verbose phpcbf -- src
+	composer exec --verbose phpcs -- --standard=PSR12 src
+	composer exec phpstan -- analyze -c phpstan.neon
