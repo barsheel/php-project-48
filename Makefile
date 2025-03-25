@@ -1,5 +1,5 @@
 gendiff:
-	bin/gendiffphp
+	bin/gendiff
 
 install:
 	composer install
