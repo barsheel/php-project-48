@@ -9,12 +9,10 @@ namespace Php\Project48\Gendiff;
 use Exception;
 use stdClass;
 
-const PRINT_ARRAY_BASE_OFFSET = 2;
-
 /**
  * Convert filename in absolute path
  *
- * @param string $path - path or filename
+ * @param  string $path - path or filename
  * @return string absolute path
  */
 function buildPath(string $path): string
@@ -30,7 +28,7 @@ function buildPath(string $path): string
         return $pathFilesDirectory;
     }
 
-    $currentDirectory = dirname(__DIR__). "/" . $path;
+    $currentDirectory = dirname(__DIR__) . "/" . $path;
     if (is_file($currentDirectory)) {
         return $currentDirectory;
     }
@@ -40,8 +38,8 @@ function buildPath(string $path): string
 /**
  * Parse JSON file and return it in array form
  *
- * @param string $path - filename
- * @return array 
+ * @param  string $path - filename
+ * @return array
  */
 function parseJsonFile(string $path): array
 {
@@ -54,10 +52,10 @@ function parseJsonFile(string $path): array
 /**
  * Convert stdClass objects to array
  *
- * @param stdClass $data
+ * @param  stdClass $data
  * @return array
  */
-function get_object_vars_recursive(stdClass $data) : array
+function get_object_vars_recursive(stdClass $data): array
 {
     $elements = get_object_vars($data);
     return array_map(
@@ -69,14 +67,16 @@ function get_object_vars_recursive(stdClass $data) : array
 /**
  * Print array recursively
  *
- * @param array $arrayToPrint
- * @param integer $offset - needs to construct indent
+ * @param  array   $arrayToPrint
+ * @param  integer $offset       - needs to construct indent
  * @return void
  */
 function printArray(array $arrayToPrint, int $offset = 0): void
 {
+    $PRINT_ARRAY_BASE_OFFSET = 2;
+
     $braceOffset = str_repeat(" ", $offset);
-    $elementOffset = str_repeat(" ", $offset + PRINT_ARRAY_BASE_OFFSET);
+    $elementOffset = str_repeat(" ", $offset + $PRINT_ARRAY_BASE_OFFSET);
 
     print_r("{$braceOffset}{\n");
 
@@ -84,10 +84,9 @@ function printArray(array $arrayToPrint, int $offset = 0): void
         if (is_array($value)) {
             print_r("{$elementOffset}{$key}");
             print_r(":\n");
-            printArray($value, $offset + PRINT_ARRAY_BASE_OFFSET * 2);
+            printArray($value, $offset + $PRINT_ARRAY_BASE_OFFSET * 2);
             break;
-        }
-        else if (is_bool($value)) {
+        } elseif (is_bool($value)) {
             $value = $value ? "true" : "false";
         }
         print_r("{$elementOffset}{$key}: {$value}\n");
