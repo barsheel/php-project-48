@@ -9,6 +9,8 @@ if (file_exists($autoloadPath1)) {
     require_once $autoloadPath2;
 }
 
+use function Php\Project48\Gendiff\arrayToString;
+use function Php\Project48\Gendiff\genDiff;
 use function Php\Project48\Gendiff\printArray;
 use function Php\Project48\Gendiff\parseJsonFile;
 
@@ -35,8 +37,5 @@ foreach ($args as $k=>$v) {
 */
 
 if ($args["<firstFile>"] && $args["<secondFile>"]) {
-    print_r("\n{$args["<firstFile>"]}:\n");
-    printArray(parseJsonFile((string) $args["<firstFile>"]));
-    print_r("\n{$args["<secondFile>"]}:\n");
-    printArray(parseJsonFile((string) $args["<secondFile>"]));
-  }
+	print_r(genDiff($args["<firstFile>"], $args["<secondFile>"]));
+}
