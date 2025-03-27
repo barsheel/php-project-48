@@ -1,2 +1,4 @@
 /vendor/
 *trunk
+build/*
+.phpunit.*cache*
