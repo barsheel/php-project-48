@@ -8,6 +8,7 @@ namespace Php\Project48\Gendiff;
 
 use Exception;
 use stdClass;
+
 /**
  * Compare two flat-json files and return difference
  *
@@ -18,34 +19,32 @@ use stdClass;
 function genDiff(string $pathToFile1, string $pathToFile2): string
 {
     $fileArray1 = arrayCastValuesToString(parseJsonFile(buildPath($pathToFile1)));
-    $fileArray2 =  arrayCastValuesToString(parseJsonFile(buildPath($pathToFile2)));
+    $fileArray2 = arrayCastValuesToString(parseJsonFile(buildPath($pathToFile2)));
+
+    $resultArray = array_merge($fileArray1, $fileArray2);
+    ksort($resultArray);
 
     $resultArray = array_reduce(
-        array_keys($fileArray1),
+        array_keys($resultArray),
         function ($accArray, $key) use ($fileArray1, $fileArray2) {
-            if (!array_key_exists($key, $fileArray2)) {
-                $accArray[] = "- {$key}:{$fileArray1[$key]}";
-            } elseif ($fileArray1[$key] !== $fileArray2[$key]) {
-                $accArray[] = "- {$key}:{$fileArray1[$key]}";
-                $accArray[] = "+ {$key}:{$fileArray2[$key]}";
-            } elseif ($fileArray1[$key] === $fileArray2[$key]) {
-                $accArray[] = "  {$key}:{$fileArray1[$key]}";
+            if ((array_key_exists($key, $fileArray1)) && (array_key_exists($key, $fileArray2))) {
+                if ($fileArray1[$key] === $fileArray2[$key]) {
+                    $accArray[] = "    {$key}: {$fileArray1[$key]}";
+                } else {
+                    $accArray[] = "  - {$key}: {$fileArray1[$key]}";
+                    $accArray[] = "  + {$key}: {$fileArray2[$key]}";
+                }
+            } elseif (array_key_exists($key, $fileArray1)) {
+                $accArray[] = "  - {$key}: {$fileArray1[$key]}";
+            } else {
+                $accArray[] = "  + {$key}: {$fileArray2[$key]}";
             }
             return $accArray;
         },
         []
     );
 
-    $fileArray2UniqueElements = array_diff_key($fileArray2, $fileArray1);
-    if ($fileArray2UniqueElements !== []) {
-        $fileArray2UniqueElementsText = array_map(
-            fn ($key) => "+ {$key}:{$fileArray2[$key]}",
-            array_keys($fileArray2UniqueElements)
-        );
-        $resultArray = array_merge($resultArray, $fileArray2UniqueElementsText);
-    }
-
-    return implode("\n", ["\n", ...$resultArray, "\n"]);
+    return implode("\n", ["{", ...$resultArray, "}"]);
 }
 
 /**
@@ -113,14 +112,12 @@ function get_object_vars_recursive(stdClass $data): array
 function arrayCastValuesToString(array $inputArray): array
 {
     return array_map(
-        function($elem) {
+        function ($elem) {
             if (is_array($elem)) {
                 return arrayCastValuesToString($elem);
-            }
-            elseif (is_bool($elem)) {
+            } elseif (is_bool($elem)) {
                 return $elem ? "true" : "false";
-            }
-            else {
+            } else {
                 return strval($elem);
             }
         },
@@ -151,9 +148,8 @@ function arrayToString(array $inputArray, int $offset = 0): string
             if (is_array($inputArray[$key])) {
                 $acc[] = "{$elementOffset}{$key}:";
                 $acc[] = arrayToString($inputArray[$key], $offset + $PRINT_ARRAY_BASE_OFFSET * 2);
-            }
-            else {
-               $acc[] = "{$elementOffset}{$key}: {$inputArray[$key]}";
+            } else {
+                $acc[] = "{$elementOffset}{$key}: {$inputArray[$key]}";
             }
             return $acc;
         },
@@ -161,10 +157,9 @@ function arrayToString(array $inputArray, int $offset = 0): string
     );
 
     return implode(
-        "\n", 
+        "\n",
         ["{$braceOffset}{",
         ...$result,
-        "{$braceOffset}}"]);
+        "{$braceOffset}}"]
+    );
 }
-
-
