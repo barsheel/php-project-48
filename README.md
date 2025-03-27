@@ -1,4 +1,8 @@
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/barsheel/php-project-48/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/barsheel/php-project-48/actions)
 
-step4 asciinema cast: https://asciinema.org/a/mK6O2LIS6LGCDSympPUzGwo6K
+<a href="https://codeclimate.com/github/barsheel/php-project-48/maintainability"><img src="https://api.codeclimate.com/v1/badges/dcd728563e7ffec61cb1/maintainability" /></a>
+
+<a href="https://codeclimate.com/github/barsheel/php-project-48/test_coverage"><img src="https://api.codeclimate.com/v1/badges/dcd728563e7ffec61cb1/test_coverage" /></a>
+
+step4 asciinema cast: https://asciinema.org/a/mK6O2LIS6LGCDSympPUzGwo6K     
