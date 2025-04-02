@@ -6,11 +6,10 @@
 
 namespace Php\Project48\Gendiff;
 
-use Exception;
-use stdClass;
+use function PHP\Project48\Parsers\parseFile;
 
 /**
- * Compare two flat-json files and return difference
+ * Compare two files and return difference
  *
  * @param string $pathToFile1
  * @param string $pathToFile2
@@ -18,8 +17,8 @@ use stdClass;
  */
 function genDiff(string $pathToFile1, string $pathToFile2): string
 {
-    $fileArray1 = arrayCastValuesToString(parseJsonFile(buildPath($pathToFile1)));
-    $fileArray2 = arrayCastValuesToString(parseJsonFile(buildPath($pathToFile2)));
+    $fileArray1 = arrayCastValuesToString(parseFile($pathToFile1));
+    $fileArray2 = arrayCastValuesToString(parseFile($pathToFile2));
 
     $resultArray = array_merge($fileArray1, $fileArray2);
     ksort($resultArray);
@@ -46,85 +45,6 @@ function genDiff(string $pathToFile1, string $pathToFile2): string
 
     return implode("\n", ["{", ...$resultArray, "}"]);
 }
-
-/**
- * Convert filename in absolute path
- *
- * @param  string $path - path or filename
- * @return string absolute path
- */
-function buildPath(string $path): string
-{
-    $realPath = realpath($path);
-    print_r($realPath);
-    if (is_file($realPath)) {
-        return $realPath;
-    }
-
-    $pathFilesDirectory = dirname(__DIR__) . "/files/" . $path;
-    if (is_file($pathFilesDirectory)) {
-        return $pathFilesDirectory;
-    }
-
-    $currentDirectory = dirname(__DIR__) . "/" . $path;
-    if (is_file($currentDirectory)) {
-        return $currentDirectory;
-    }
-    throw new Exception("\nNo such file\n");
-}
-
-/**
- * Parse JSON file and return it in array form
- *
- * @param  string $path - filename
- * @return array
- */
-function parseJsonFile(string $path): array
-{
-    $path = buildPath($path);
-    $fileContent = file_get_contents($path);
-    $data = json_decode($fileContent);
-    return get_object_vars_recursive($data);
-}
-
-
-/**
- * Convert stdClass objects to array
- *
- * @param  stdClass $data
- * @return array
- */
-function get_object_vars_recursive(stdClass $data): array
-{
-    $elements = get_object_vars($data);
-    return array_map(
-        fn($item) => ($item instanceof stdClass) ? get_object_vars_recursive($item) : $item,
-        $elements
-    );
-}
-
-/**
- * Cast all values in array to string
- *
- * @param array $inputArray
- * @return array
- */
-function arrayCastValuesToString(array $inputArray): array
-{
-    return array_map(
-        function ($elem) {
-            if (is_array($elem)) {
-                return arrayCastValuesToString($elem);
-            } elseif (is_bool($elem)) {
-                return $elem ? "true" : "false";
-            } else {
-                return strval($elem);
-            }
-        },
-        $inputArray
-    );
-}
-
 
 /**
  * Output array like string
@@ -161,5 +81,27 @@ function arrayToString(array $inputArray, int $offset = 0): string
         ["{$braceOffset}{",
         ...$result,
         "{$braceOffset}}"]
+    );
+}
+
+/**
+ * Cast all values in array to string
+ *
+ * @param array $inputArray
+ * @return array
+ */
+function arrayCastValuesToString(array $inputArray): array
+{
+    return array_map(
+        function ($elem) {
+            if (is_array($elem)) {
+                return arrayCastValuesToString($elem);
+            } elseif (is_bool($elem)) {
+                return $elem ? "true" : "false";
+            } else {
+                return strval($elem);
+            }
+        },
+        $inputArray
     );
 }
