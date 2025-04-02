@@ -35,7 +35,8 @@ function parseFile(string $path): array
  */
 function parseYamlFile(string $path): array
 {
-    return Yaml::parseFile(buildPath($path));
+    $data = Yaml::parseFile(buildPath($path), Yaml::PARSE_OBJECT_FOR_MAP);
+    return get_object_vars_recursive($data);
 }
 
 /**
