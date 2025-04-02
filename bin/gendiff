@@ -37,5 +37,5 @@ foreach ($args as $k=>$v) {
 */
 
 if ($args["<firstFile>"] && $args["<secondFile>"]) {
-	print_r(genDiff($args["<firstFile>"], $args["<secondFile>"]));
+	print_r(genDiff((string)$args["<firstFile>"], (string)$args["<secondFile>"]));
 }
