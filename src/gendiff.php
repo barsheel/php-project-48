@@ -19,31 +19,61 @@ function genDiff(string $pathToFile1, string $pathToFile2): string
 {
     $fileArray1 = arrayCastValuesToString(parseFile($pathToFile1));
     $fileArray2 = arrayCastValuesToString(parseFile($pathToFile2));
+    $result = formatArrayToString(arrayDiffRecursive($fileArray1, $fileArray2));
+    file_put_contents("output", $result);
+    return $result;
+}
 
+
+function arrayDiffRecursive(array $fileArray1, array $fileArray2): array
+{
     $resultArray = array_merge($fileArray1, $fileArray2);
+
     ksort($resultArray);
 
     $resultArray = array_reduce(
         array_keys($resultArray),
         function ($accArray, $key) use ($fileArray1, $fileArray2) {
-            if ((array_key_exists($key, $fileArray1)) && (array_key_exists($key, $fileArray2))) {
-                if ($fileArray1[$key] === $fileArray2[$key]) {
-                    $accArray[] = "    {$key}: {$fileArray1[$key]}";
-                } else {
-                    $accArray[] = "  - {$key}: {$fileArray1[$key]}";
-                    $accArray[] = "  + {$key}: {$fileArray2[$key]}";
+            $existsInFirst = (array_key_exists($key, $fileArray1));
+            $existsInSecond = (array_key_exists($key, $fileArray2));
+            $elementFromFirst = $existsInFirst ? $fileArray1[$key] : null;
+            $elementFromSecond = $existsInSecond ? $fileArray2[$key] : null;
+
+            //if key exists in both arrays
+            if ($existsInFirst && $existsInSecond) {
+                //if values are both arrays
+                if (is_array($elementFromFirst) && is_array($elementFromSecond)) {
+                    $accArray["  {$key}"] = arrayDiffRecursive($elementFromFirst, $elementFromSecond);
+                    return $accArray;
                 }
-            } elseif (array_key_exists($key, $fileArray1)) {
-                $accArray[] = "  - {$key}: {$fileArray1[$key]}";
-            } else {
-                $accArray[] = "  + {$key}: {$fileArray2[$key]}";
+                //if values are not array and values are equal
+                if ($elementFromFirst === $elementFromSecond) {
+                    $accArray["  {$key}"] = $elementFromFirst;
+                    return $accArray;
+                }
+            }
+            //if key exists in first
+            if ($existsInFirst) {
+                if (is_array($elementFromFirst)) {
+                    $accArray["- {$key}"] = arrayDiffRecursive($elementFromFirst, $elementFromFirst);
+                } else {
+                    $accArray["- {$key}"] = $elementFromFirst;
+                }
+            } 
+            //if key exists in second
+            if($existsInSecond) {
+                if (is_array($elementFromSecond)) {
+                    $accArray["+ {$key}"] = arrayDiffRecursive($elementFromSecond, $elementFromSecond);
+                } else {
+                    $accArray["+ {$key}"] = $elementFromSecond;
+                }
             }
             return $accArray;
         },
         []
     );
-
-    return implode("\n", ["{", ...$resultArray, "}"]);
+    
+    return $resultArray;
 }
 
 /**
@@ -53,7 +83,7 @@ function genDiff(string $pathToFile1, string $pathToFile2): string
  * @param  integer $offset       - needs to construct indent
  * @return string
  */
-function arrayToString(array $inputArray, int $offset = 0): string
+function formatArrayToString(array $inputArray, int $offset = 0, string $parent = ""): string
 {
     $PRINT_ARRAY_BASE_OFFSET = 2;
 
@@ -66,8 +96,7 @@ function arrayToString(array $inputArray, int $offset = 0): string
         array_keys($inputArray),
         function ($acc, $key) use ($inputArray, $offset, $elementOffset, $PRINT_ARRAY_BASE_OFFSET) {
             if (is_array($inputArray[$key])) {
-                $acc[] = "{$elementOffset}{$key}:";
-                $acc[] = arrayToString($inputArray[$key], $offset + $PRINT_ARRAY_BASE_OFFSET * 2);
+                $acc[] = formatArrayToString($inputArray[$key], $offset + $PRINT_ARRAY_BASE_OFFSET * 2, "{$elementOffset}{$key}: ");
             } else {
                 $acc[] = "{$elementOffset}{$key}: {$inputArray[$key]}";
             }
@@ -78,7 +107,7 @@ function arrayToString(array $inputArray, int $offset = 0): string
 
     return implode(
         "\n",
-        ["{$braceOffset}{",
+        ["{$parent}{",
         ...$result,
         "{$braceOffset}}"]
     );
@@ -98,6 +127,8 @@ function arrayCastValuesToString(array $inputArray): array
                 return arrayCastValuesToString($elem);
             } elseif (is_bool($elem)) {
                 return $elem ? "true" : "false";
+            } elseif (is_null($elem)) {
+                return "null";
             } else {
                 return strval($elem);
             }
