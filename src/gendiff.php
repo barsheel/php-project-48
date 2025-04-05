@@ -6,6 +6,8 @@
 
 namespace Php\Project48\Gendiff;
 
+use Exception;
+
 use function PHP\Project48\Parsers\parseFile;
 
 /**
@@ -15,13 +17,22 @@ use function PHP\Project48\Parsers\parseFile;
  * @param string $pathToFile2
  * @return string
  */
-function genDiff(string $pathToFile1, string $pathToFile2): string
+function genDiff(string $pathToFile1, string $pathToFile2, string $format = "stylish"): string
 {
     $fileArray1 = arrayCastValuesToString(parseFile($pathToFile1));
     $fileArray2 = arrayCastValuesToString(parseFile($pathToFile2));
-    $result = formatArrayToString(arrayDiffRecursive($fileArray1, $fileArray2));
-    file_put_contents("output", $result);
-    return $result;
+    $result = arrayDiffRecursive($fileArray1, $fileArray2);
+    switch ($format) {
+        case "stylish":
+            $output = stylishFormatter($result);
+            break;
+        default:
+            throw new Exception("No sucn formatter");
+            $output = stylishFormatter($result);
+    }
+    
+    file_put_contents("output", $output);
+    return $output;
 }
 
 
@@ -83,7 +94,7 @@ function arrayDiffRecursive(array $fileArray1, array $fileArray2): array
  * @param  integer $offset       - needs to construct indent
  * @return string
  */
-function formatArrayToString(array $inputArray, int $offset = 0, string $parent = ""): string
+function stylishFormatter(array $inputArray, int $offset = 0, string $parent = ""): string
 {
     $PRINT_ARRAY_BASE_OFFSET = 2;
 
@@ -96,7 +107,7 @@ function formatArrayToString(array $inputArray, int $offset = 0, string $parent 
         array_keys($inputArray),
         function ($acc, $key) use ($inputArray, $offset, $elementOffset, $PRINT_ARRAY_BASE_OFFSET) {
             if (is_array($inputArray[$key])) {
-                $acc[] = formatArrayToString($inputArray[$key], $offset + $PRINT_ARRAY_BASE_OFFSET * 2, "{$elementOffset}{$key}: ");
+                $acc[] = stylishFormatter($inputArray[$key], $offset + $PRINT_ARRAY_BASE_OFFSET * 2, "{$elementOffset}{$key}: ");
             } else {
                 $acc[] = "{$elementOffset}{$key}: {$inputArray[$key]}";
             }
