@@ -14,7 +14,7 @@ lint:
 	composer exec phpstan -- analyze -c phpstan.neon
 
 test:
-	composer exec --verbose phpunit tests
+	composer exec --verbose phpunit tests -- --display-warnings
 
 test-coverage:
 	XDEBUG_MODE=coverage composer exec --verbose phpunit tests -- --coverage-clover build/logs/clover.xml
