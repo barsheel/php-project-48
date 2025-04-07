@@ -8,4 +8,5 @@
 step4 asciinema cast: https://asciinema.org/a/mK6O2LIS6LGCDSympPUzGwo6K     
 step6 asciinema cast: https://asciinema.org/a/5qYI5ONFHjpuZgqCZUg0GniHt
 step7 asciinema cast: https://asciinema.org/a/cxrGh0S4lYGRZkyC5vfsa5xrZ
+step8 asciinema cast: https://asciinema.org/a/MAVMgLtJW87iZYweSNqasWI2g
 
