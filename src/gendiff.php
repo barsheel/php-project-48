@@ -9,6 +9,7 @@ namespace Php\Project48\Gendiff;
 use Exception;
 
 use function PHP\Project48\Parsers\parseFile;
+use function PHP\Project48\Formatters\format;
 
 /**
  * Compare two files and return difference
@@ -19,18 +20,12 @@ use function PHP\Project48\Parsers\parseFile;
  */
 function genDiff(string $pathToFile1, string $pathToFile2, string $format = "stylish"): string
 {
-    $fileArray1 = arrayCastValuesToString(parseFile($pathToFile1));
-    $fileArray2 = arrayCastValuesToString(parseFile($pathToFile2));
-    $result = arrayDiffRecursive($fileArray1, $fileArray2);
-    switch ($format) {
-        case "stylish":
-            $output = stylishFormatter($result);
-            break;
-        default:
-            throw new Exception("No sucn formatter");
-            $output = stylishFormatter($result);
-    }
-    
+    $fileArray1 = (parseFile($pathToFile1));
+    $fileArray2 = (parseFile($pathToFile2));
+    $diffArray = arrayDiffRecursive($fileArray1, $fileArray2);
+
+    $output = format($diffArray, $format);
+
     file_put_contents("output", $output);
     return $output;
 }
@@ -54,96 +49,35 @@ function arrayDiffRecursive(array $fileArray1, array $fileArray2): array
             if ($existsInFirst && $existsInSecond) {
                 //if values are both arrays
                 if (is_array($elementFromFirst) && is_array($elementFromSecond)) {
-                    $accArray["  {$key}"] = arrayDiffRecursive($elementFromFirst, $elementFromSecond);
+                    $accArray["{$key}"]["actual"] = arrayDiffRecursive($elementFromFirst, $elementFromSecond);
                     return $accArray;
                 }
                 //if values are not array and values are equal
                 if ($elementFromFirst === $elementFromSecond) {
-                    $accArray["  {$key}"] = $elementFromFirst;
+                    $accArray["{$key}"]["actual"] = $elementFromFirst;
                     return $accArray;
                 }
             }
             //if key exists in first
             if ($existsInFirst) {
                 if (is_array($elementFromFirst)) {
-                    $accArray["- {$key}"] = arrayDiffRecursive($elementFromFirst, $elementFromFirst);
+                    $accArray["{$key}"]["old"] = arrayDiffRecursive($elementFromFirst, $elementFromFirst);
                 } else {
-                    $accArray["- {$key}"] = $elementFromFirst;
+                    $accArray["{$key}"]["old"] = $elementFromFirst;
                 }
-            } 
+            }
             //if key exists in second
-            if($existsInSecond) {
+            if ($existsInSecond) {
                 if (is_array($elementFromSecond)) {
-                    $accArray["+ {$key}"] = arrayDiffRecursive($elementFromSecond, $elementFromSecond);
+                    $accArray["{$key}"]["new"] = arrayDiffRecursive($elementFromSecond, $elementFromSecond);
                 } else {
-                    $accArray["+ {$key}"] = $elementFromSecond;
+                    $accArray["{$key}"]["new"] = $elementFromSecond;
                 }
             }
             return $accArray;
         },
         []
     );
-    
+
     return $resultArray;
-}
-
-/**
- * Output array like string
- *
- * @param  array   $inputArray
- * @param  integer $offset       - needs to construct indent
- * @return string
- */
-function stylishFormatter(array $inputArray, int $offset = 0, string $parent = ""): string
-{
-    $PRINT_ARRAY_BASE_OFFSET = 2;
-
-    $result = [];
-
-    $braceOffset = str_repeat(" ", $offset);
-    $elementOffset = str_repeat(" ", $offset + $PRINT_ARRAY_BASE_OFFSET);
-
-    $result = array_reduce(
-        array_keys($inputArray),
-        function ($acc, $key) use ($inputArray, $offset, $elementOffset, $PRINT_ARRAY_BASE_OFFSET) {
-            if (is_array($inputArray[$key])) {
-                $acc[] = stylishFormatter($inputArray[$key], $offset + $PRINT_ARRAY_BASE_OFFSET * 2, "{$elementOffset}{$key}: ");
-            } else {
-                $acc[] = "{$elementOffset}{$key}: {$inputArray[$key]}";
-            }
-            return $acc;
-        },
-        []
-    );
-
-    return implode(
-        "\n",
-        ["{$parent}{",
-        ...$result,
-        "{$braceOffset}}"]
-    );
-}
-
-/**
- * Cast all values in array to string
- *
- * @param array $inputArray
- * @return array
- */
-function arrayCastValuesToString(array $inputArray): array
-{
-    return array_map(
-        function ($elem) {
-            if (is_array($elem)) {
-                return arrayCastValuesToString($elem);
-            } elseif (is_bool($elem)) {
-                return $elem ? "true" : "false";
-            } elseif (is_null($elem)) {
-                return "null";
-            } else {
-                return strval($elem);
-            }
-        },
-        $inputArray
-    );
 }
