@@ -12,49 +12,32 @@ final class GendiffTest extends TestCase
     {
         return (__DIR__ . "/fixtures/" . $filename);
     }
-    public function testFlatJSON(): void
-    {
-        $file1 = $this->getFixture("file1.json");
-        $file2 = $this->getFixture("file2.json");
 
-        $expectedResult = file_get_contents(GendiffTest::getFixture("expected_result1"));
-        $result = genDiff($file1, $file2);
-        $this -> assertEquals($expectedResult, $result);
-
-        $expectedResult = file_get_contents(GendiffTest::getFixture("expected_result2"));
-        $result = genDiff($file2, $file1);
-        $this -> assertEquals($expectedResult, $result);
-    }
-
-    public function testNestedJSON(): void
+    public function testJSON(): void
     {
         $file1 = $this->getFixture("file3.json");
         $file2 = $this->getFixture("file4.json");
-        $expectedResult = file_get_contents(GendiffTest::getFixture("expected_result3"));
-        $result = genDiff($file1, $file2);
-        $this -> assertEquals($expectedResult, $result);
+
+        $expectedResultStylish = file_get_contents(GendiffTest::getFixture("expected_result3"));
+        $result = genDiff($file1, $file2, "stylish");
+        $this -> assertEquals($expectedResultStylish, $result);
+
+        $expectedResultPlain = file_get_contents(GendiffTest::getFixture("expected_result4"));
+        $result = genDiff($file1, $file2, "plain");
+        $this -> assertEquals($expectedResultPlain, $result);
     }
 
-    public function testFlatYML(): void
-    {
-        $file1 = $this->getFixture("file1.yml");
-        $file2 = $this->getFixture("file2.yml");
-
-        $expectedResult = file_get_contents(GendiffTest::getFixture("expected_result1"));
-        $result = genDiff($file1, $file2);
-        $this -> assertEquals($expectedResult, $result);
-
-        $expectedResult = file_get_contents(GendiffTest::getFixture("expected_result2"));
-        $result = genDiff($file2, $file1);
-        $this -> assertEquals($expectedResult, $result);
-    }
-    
-    public function testNestedYAML(): void
+    public function testYAML(): void
     {
         $file1 = $this->getFixture("file3.yml");
         $file2 = $this->getFixture("file4.yml");
-        $expectedResult = file_get_contents(GendiffTest::getFixture("expected_result3"));
-        $result = genDiff($file1, $file2);
-        $this -> assertEquals($expectedResult, $result);
+
+        $expectedResultStylish = file_get_contents(GendiffTest::getFixture("expected_result3"));
+        $result = genDiff($file1, $file2, "stylish");
+        $this -> assertEquals($expectedResultStylish, $result);
+
+        $expectedResultPlain = file_get_contents(GendiffTest::getFixture("expected_result4"));
+        $result = genDiff($file1, $file2, "plain");
+        $this -> assertEquals($expectedResultPlain, $result);
     }
 }
