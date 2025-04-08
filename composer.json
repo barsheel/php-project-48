@@ -8,7 +8,8 @@
             "src/parsers.php",
             "src/formatters.php",
             "src/formatters/plainFormatter.php",
-            "src/formatters/stylishFormatter.php"
+            "src/formatters/stylishFormatter.php",
+            "src/formatters/jsonFormatter.php"
         ],
         "psr-4": {
             "Hexlet\\Code\\": "src/"
