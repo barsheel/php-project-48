@@ -24,12 +24,10 @@ Usage:
 Options:
   -h --help                     Show this screen
   -v --version                  Show version
-  --format <fmt>                Report format [default: stylish]
+  --format <fmt>                Report format [default: stylish | plain | json]
 DOC;
 
 $args = Docopt::handle($doc, array('version'=>'version 1.0'));
-
-//print args
 
 /*foreach ($args as $k=>$v) {
     echo $k.': '.json_encode($v).PHP_EOL;
