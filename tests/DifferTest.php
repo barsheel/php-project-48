@@ -4,9 +4,9 @@ namespace Php\Project48\Gendiff\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use function Php\Project48\Gendiff\genDiff;
+use function Differ\Differ\genDiff;
 
-final class GendiffTest extends TestCase
+final class DifferTest extends TestCase
 {
     private function getFixture(string $filename): string
     {
