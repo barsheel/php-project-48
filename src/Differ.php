@@ -4,7 +4,7 @@
  * Logic functions of gendiff
  */
 
-namespace Php\Project48\Gendiff;
+namespace Differ\Differ;
 
 use function PHP\Project48\Parsers\parseFile;
 use function PHP\Project48\Formatters\format;
