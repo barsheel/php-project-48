@@ -6,8 +6,6 @@
 
 namespace Php\Project48\Gendiff;
 
-use Exception;
-
 use function PHP\Project48\Parsers\parseFile;
 use function PHP\Project48\Formatters\format;
 
@@ -30,7 +28,12 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $format = "sty
     return $output;
 }
 
-
+/**
+ * internal recursive function
+ * @param array $fileArray1
+ * @param array $fileArray2
+ * @return array
+ */
 function arrayDiffRecursive(array $fileArray1, array $fileArray2): array
 {
     $resultArray = array_merge($fileArray1, $fileArray2);

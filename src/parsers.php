@@ -6,12 +6,9 @@ use Exception;
 use stdClass;
 use Symfony\Component\Yaml\Yaml;
 
-//ебануть надо чтобы парсило в данные, а конвертация в строки пусть будет в гендифе
-
-//пусть будет парс джейсон файл
-
 /**
  * parse json or yaml file
+ *
  * @param string $path
  * @throws \Exception
  * @return array

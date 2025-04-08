@@ -3,7 +3,7 @@
 namespace Php\Project48\Formatters\StylishFormatter;
 
 /**
- * Summary of Php\Project48\Formatters\StylishFormatter\stylishFormatter
+ * convert diff array to stylish-style text
  * @param array $inputArray
  * @return string
  */
@@ -14,7 +14,7 @@ function stylishFormatter(array $inputArray): string
 }
 
 /**
- * Output array like string
+ * internal recursive function which forms stylish-style text
  *
  * @param  array   $inputArray
  * @param  integer $offsetLevel       - needs to construct indent
@@ -58,7 +58,7 @@ function stylishFormatterRecursive(array $inputArray, int $offsetLevel = 0): str
 }
 
 /**
- * Cast all values in array to string
+ * сast all values in array to stylish style - it's prepare diff array for output
  *
  * @param array $inputArray
  * @return array

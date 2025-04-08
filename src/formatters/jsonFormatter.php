@@ -3,7 +3,7 @@
 namespace Php\Project48\Formatters\JsonFormatter;
 
 /**
- * Summary of Php\Project48\Formatters\StylishFormatter\stylishFormatter
+ * convert diff array to json-style text
  * @param array $inputArray
  * @return string
  */
@@ -14,7 +14,7 @@ function jsonFormatter(array $inputArray): string
 }
 
 /**
- * Output array like string
+ * internal recursive function which forms json-style text
  *
  * @param  array   $inputArray
  * @param  integer $offsetLevel       - needs to construct indent
@@ -41,15 +41,10 @@ function jsonFormatterRecursive(array $inputArray, int $offsetLevel = 0): string
     $outputStr = implode(",\n", $output);
 
     return "{\n" . $outputStr . "\n{$parentOffset}}";
-/*    return implode(
-        ",\n",
-        ["{", ...$output, "{$parentOffset}}"]
-    );
-    */
 }
 
 /**
- * Cast all values in array to string
+ * сast all values in array to json style - it's prepare diff array for output
  *
  * @param array $inputArray
  * @return array

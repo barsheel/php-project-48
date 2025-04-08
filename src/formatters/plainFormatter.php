@@ -2,6 +2,11 @@
 
 namespace Php\Project48\Formatters\PlainFormatter;
 
+/**
+ * convert diff array to plain-style text
+ * @param array $inputArray
+ * @return string
+ */
 function plainFormatter(array $inputArray): string
 {
     $array = arrayCastValuesToStringWithQuotes($inputArray);
@@ -9,10 +14,10 @@ function plainFormatter(array $inputArray): string
 }
 
 /**
- * Output array like string
+ * internal recursive function which forms plain-style text
  *
  * @param array $inputArray
- * @param string $parent            - name of current array key
+ * @param string $parent
  * @return string
  */
 function plainFormatterRecursive(array $inputArray, string $parent = ""): string
@@ -49,6 +54,12 @@ function plainFormatterRecursive(array $inputArray, string $parent = ""): string
     return implode("\n", $output);
 }
 
+/**
+ * сast all values in array to plain style - it's prepare diff array for output
+ *
+ * @param array $inputArray
+ * @return array
+ */
 function arrayCastValuesToStringWithQuotes(array $inputArray): array
 {
     return array_map(
