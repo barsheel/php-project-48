@@ -1,1 +1,0 @@
-docker run -v .:/php-project-48 barsheel_php_image

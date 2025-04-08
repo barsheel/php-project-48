@@ -1,1 +1,0 @@
-docker build -t barsheel_php_image .
