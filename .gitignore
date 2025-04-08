@@ -2,3 +2,5 @@
 *trunk
 build/*
 .phpunit.*cache*
+output
+*docker*
