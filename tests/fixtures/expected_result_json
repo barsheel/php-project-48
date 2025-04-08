@@ -1,0 +1,98 @@
+{
+  "common": {
+    "actualValue": {
+      "follow": {
+        "newValue": false
+      },
+      "setting1": {
+        "actualValue": "Value 1"
+      },
+      "setting2": {
+        "oldValue": "200"
+      },
+      "setting3": {
+        "oldValue": true,
+        "newValue": null
+      },
+      "setting4": {
+        "newValue": "blah blah"
+      },
+      "setting5": {
+        "newValue": {
+          "key5": {
+            "actualValue": "value5"
+          }
+        }
+      },
+      "setting6": {
+        "actualValue": {
+          "doge": {
+            "actualValue": {
+              "wow": {
+                "oldValue": "",
+                "newValue": "so much"
+              }
+            }
+          },
+          "key": {
+            "actualValue": "value"
+          },
+          "ops": {
+            "newValue": "vops"
+          }
+        }
+      }
+    }
+  },
+  "group1": {
+    "actualValue": {
+      "baz": {
+        "oldValue": "bas",
+        "newValue": "bars"
+      },
+      "foo": {
+        "actualValue": "bar"
+      },
+      "nest": {
+        "oldValue": {
+          "key": {
+            "actualValue": "value"
+          }
+        },
+        "newValue": "str"
+      }
+    }
+  },
+  "group2": {
+    "oldValue": {
+      "abc": {
+        "actualValue": "12345"
+      },
+      "deep": {
+        "actualValue": {
+          "id": {
+            "actualValue": "45"
+          }
+        }
+      }
+    }
+  },
+  "group3": {
+    "newValue": {
+      "deep": {
+        "actualValue": {
+          "id": {
+            "actualValue": {
+              "number": {
+                "actualValue": "45"
+              }
+            }
+          }
+        }
+      },
+      "fee": {
+        "actualValue": "100500"
+      }
+    }
+  }
+}
