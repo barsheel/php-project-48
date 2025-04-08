@@ -22,21 +22,21 @@ function plainFormatterRecursive(array $inputArray, string $parent = ""): string
     foreach ($inputArray as $key => $signedElement) {
         $property = $parent ? "{$parent}.{$key}" : "{$key}";
 
-        if (isset($signedElement['actual']) && is_array($signedElement['actual'])) {
+        if (isset($signedElement['actualValue']) && is_array($signedElement['actualValue'])) {
             //if no changes at current element
-            $output[] = plainFormatterRecursive($signedElement['actual'], $property);
-        } elseif (isset($signedElement['old']) && isset($signedElement['new'])) {
+            $output[] = plainFormatterRecursive($signedElement['actualValue'], $property);
+        } elseif (isset($signedElement['oldValue']) && isset($signedElement['newValue'])) {
             //if element was updated
-            $oldValue = is_array($signedElement['old']) ? "[complex value]" : $signedElement['old'];
-            $newValue = is_array($signedElement['new']) ? "[complex value]" : $signedElement['new'];
+            $oldValue = is_array($signedElement['oldValue']) ? "[complex value]" : $signedElement['oldValue'];
+            $newValue = is_array($signedElement['newValue']) ? "[complex value]" : $signedElement['newValue'];
             $output[] = "Property '{$property}' was updated. From {$oldValue} to {$newValue}";
-        } elseif (isset($signedElement['old'])) {
+        } elseif (isset($signedElement['oldValue'])) {
             //if element was removed
             $output[] = "Property '{$property}' was removed";
-        } elseif (isset($signedElement['new'])) {
+        } elseif (isset($signedElement['newValue'])) {
             //if element was added
-            $element = $signedElement['new'];
-            if ((is_array($signedElement['new']))) {
+            $element = $signedElement['newValue'];
+            if ((is_array($signedElement['newValue']))) {
                 $value = "[complex value]";
             } else {
                 $value = $element;

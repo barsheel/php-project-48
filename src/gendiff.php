@@ -49,29 +49,29 @@ function arrayDiffRecursive(array $fileArray1, array $fileArray2): array
             if ($existsInFirst && $existsInSecond) {
                 //if values are both arrays
                 if (is_array($elementFromFirst) && is_array($elementFromSecond)) {
-                    $accArray["{$key}"]["actual"] = arrayDiffRecursive($elementFromFirst, $elementFromSecond);
+                    $accArray["{$key}"]["actualValue"] = arrayDiffRecursive($elementFromFirst, $elementFromSecond);
                     return $accArray;
                 }
                 //if values are not array and values are equal
                 if ($elementFromFirst === $elementFromSecond) {
-                    $accArray["{$key}"]["actual"] = $elementFromFirst;
+                    $accArray["{$key}"]["actualValue"] = $elementFromFirst;
                     return $accArray;
                 }
             }
             //if key exists in first
             if ($existsInFirst) {
                 if (is_array($elementFromFirst)) {
-                    $accArray["{$key}"]["old"] = arrayDiffRecursive($elementFromFirst, $elementFromFirst);
+                    $accArray["{$key}"]["oldValue"] = arrayDiffRecursive($elementFromFirst, $elementFromFirst);
                 } else {
-                    $accArray["{$key}"]["old"] = $elementFromFirst;
+                    $accArray["{$key}"]["oldValue"] = $elementFromFirst;
                 }
             }
             //if key exists in second
             if ($existsInSecond) {
                 if (is_array($elementFromSecond)) {
-                    $accArray["{$key}"]["new"] = arrayDiffRecursive($elementFromSecond, $elementFromSecond);
+                    $accArray["{$key}"]["newValue"] = arrayDiffRecursive($elementFromSecond, $elementFromSecond);
                 } else {
-                    $accArray["{$key}"]["new"] = $elementFromSecond;
+                    $accArray["{$key}"]["newValue"] = $elementFromSecond;
                 }
             }
             return $accArray;

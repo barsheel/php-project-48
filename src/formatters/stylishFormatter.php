@@ -18,10 +18,9 @@ function stylishFormatter(array $inputArray): string
  *
  * @param  array   $inputArray
  * @param  integer $offsetLevel       - needs to construct indent
- * @param string $parent
  * @return string
  */
-function stylishFormatterRecursive(array $inputArray, int $offsetLevel = 0, string $parent = ""): string
+function stylishFormatterRecursive(array $inputArray, int $offsetLevel = 0): string
 {
     $PRINT_ARRAY_BASE_OFFSET = "  ";
 
@@ -33,13 +32,13 @@ function stylishFormatterRecursive(array $inputArray, int $offsetLevel = 0, stri
     foreach ($inputArray as $key => $signedElement) {
         foreach ($signedElement as $sign => $childElement) {
             switch ($sign) {
-                case "actual":
+                case "actualValue":
                     $prefix = "  ";
                     break;
-                case "old":
+                case "oldValue":
                     $prefix = "- ";
                     break;
-                case "new":
+                case "newValue":
                     $prefix = "+ ";
                     break;
             }
@@ -54,7 +53,7 @@ function stylishFormatterRecursive(array $inputArray, int $offsetLevel = 0, stri
 
     return implode(
         "\n",
-        ["{$parent}{", ...$output, "{$parentOffset}}"]
+        ["{", ...$output, "{$parentOffset}}"]
     );
 }
 
