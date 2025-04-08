@@ -12,7 +12,6 @@ use function PHP\Project48\Formatters\JsonFormatter\jsonFormatter;
  * function calls formatter functions
  * @param array $inputArray
  * @param string $formatter - formatter's name
- * @throws \Exception       - if can't reach file
  * @return string
  */
 function format(array $inputArray, string $formatter): string
@@ -25,6 +24,6 @@ function format(array $inputArray, string $formatter): string
         case "json":
             return jsonFormatter($inputArray);
         default:
-            throw new Exception("No such formatter");
+            return "\nNo such formatter\n";
     }
 }
