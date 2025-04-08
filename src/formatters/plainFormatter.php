@@ -71,7 +71,7 @@ function arrayCastValuesToStringWithQuotes(array $inputArray): array
             } elseif (is_null($elem)) {
                 return "null";
             } elseif (is_int($elem)) {
-                return $elem; 
+                return $elem;
             } else {
                 return "'{$elem}'";
             }
