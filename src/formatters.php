@@ -7,7 +7,7 @@ use function Differ\Differ\Formatters\StylishFormatter\stylishFormatter;
 use function Differ\Differ\Formatters\JsonFormatter\jsonFormatter;
 
 /**
- * function calls formatter functions
+ * Function calls formatter functions
  * @param array $inputArray
  * @param string $formatter - formatter's name
  * @return string

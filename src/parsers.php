@@ -7,7 +7,7 @@ use stdClass;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * parse json or yaml file
+ * Parse json or yaml file
  *
  * @param string $path
  * @throws \Exception
