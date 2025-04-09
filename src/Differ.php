@@ -6,10 +6,10 @@
 
 namespace Differ\Differ;
 
+use Functional;
+
 use function Differ\Differ\Parsers\parseFile;
 use function Differ\Differ\Formatters\format;
-
-use Functional;
 
 /**
  * Compare two files and return difference
