@@ -2,8 +2,6 @@
 
 namespace Differ\Differ\Formatters;
 
-use Exception;
-
 use function Differ\Differ\Formatters\PlainFormatter\plainFormatter;
 use function Differ\Differ\Formatters\StylishFormatter\stylishFormatter;
 use function Differ\Differ\Formatters\JsonFormatter\jsonFormatter;
