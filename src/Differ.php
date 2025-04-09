@@ -9,6 +9,8 @@ namespace Differ\Differ;
 use function Differ\Differ\Parsers\parseFile;
 use function Differ\Differ\Formatters\format;
 
+use Functional;
+
 /**
  * Compare two files and return difference
  *
@@ -28,6 +30,7 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $format = "sty
     return $output;
 }
 
+
 /**
  * internal recursive function
  * @param array $fileArray1
@@ -36,51 +39,71 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $format = "sty
  */
 function arrayDiffRecursive(array $fileArray1, array $fileArray2): array
 {
-    $resultArray = array_merge($fileArray1, $fileArray2);
-
-    ksort($resultArray);
-
-    $resultArray = array_reduce(
-        array_keys($resultArray),
-        function ($accArray, $key) use ($fileArray1, $fileArray2) {
-            $existsInFirst = (array_key_exists($key, $fileArray1));
-            $existsInSecond = (array_key_exists($key, $fileArray2));
-            $elementFromFirst = $existsInFirst ? $fileArray1[$key] : null;
-            $elementFromSecond = $existsInSecond ? $fileArray2[$key] : null;
-
-            //if key exists in both arrays
-            if ($existsInFirst && $existsInSecond) {
-                //if values are both arrays
-                if (is_array($elementFromFirst) && is_array($elementFromSecond)) {
-                    $accArray["{$key}"]["actualValue"] = arrayDiffRecursive($elementFromFirst, $elementFromSecond);
-                    return $accArray;
-                }
-                //if values are not array and values are equal
-                if ($elementFromFirst === $elementFromSecond) {
-                    $accArray["{$key}"]["actualValue"] = $elementFromFirst;
-                    return $accArray;
-                }
-            }
-            //if key exists in first
-            if ($existsInFirst) {
-                if (is_array($elementFromFirst)) {
-                    $accArray["{$key}"]["oldValue"] = arrayDiffRecursive($elementFromFirst, $elementFromFirst);
-                } else {
-                    $accArray["{$key}"]["oldValue"] = $elementFromFirst;
-                }
-            }
-            //if key exists in second
-            if ($existsInSecond) {
-                if (is_array($elementFromSecond)) {
-                    $accArray["{$key}"]["newValue"] = arrayDiffRecursive($elementFromSecond, $elementFromSecond);
-                } else {
-                    $accArray["{$key}"]["newValue"] = $elementFromSecond;
-                }
-            }
-            return $accArray;
-        },
-        []
+    $mergedArray = array_merge($fileArray1, $fileArray2);
+    $sortedArrayKeys = \Functional\sort(
+        array_keys($mergedArray),
+        fn($first, $second) => strcmp($first, $second)
     );
 
-    return $resultArray;
+    $result = array_map(
+        function ($key) use ($fileArray1, $fileArray2) {
+            $isExistsInFirst = (array_key_exists($key, $fileArray1));
+            $isExistsInSecond = (array_key_exists($key, $fileArray2));
+            $elementFromFirst = $isExistsInFirst ? $fileArray1[$key] : null;
+            $elementFromSecond = $isExistsInSecond ? $fileArray2[$key] : null;
+            $isArrayFirst = is_array($elementFromFirst);
+            $isArraySecond = is_array($elementFromSecond);
+
+            //if both are array
+            if ($isArrayFirst && $isArraySecond) {
+                $children = arrayDiffRecursive($elementFromFirst, $elementFromSecond);
+                return ['key' => $key, "type" => "array", "children" => $children];
+            }
+            if ($isArrayFirst) {
+                $elementFromFirst = transformAssociativeArray($elementFromFirst);
+            } elseif ($isArraySecond) {
+                $elementFromSecond = transformAssociativeArray($elementFromSecond);
+            }
+            if ($isExistsInFirst && $isExistsInSecond) {
+                if ($elementFromFirst === $elementFromSecond) {
+                    return ['key' => $key, "type" => "unchanged", "value" => $elementFromFirst];
+                } else {
+                    return ['key' => $key, "type" => "changed", "old_value" => $elementFromFirst, "new_value" => $elementFromSecond];
+                }
+            }
+            if ($isExistsInFirst) {
+                return ['key' => $key, "type" => "removed", "old_value" => $elementFromFirst];
+            }
+            if ($isExistsInSecond) {
+                return ['key' => $key, "type" => "added", "new_value" => $elementFromSecond];
+            }
+        },
+        $sortedArrayKeys
+    );
+    return $result;
+}
+
+function transformAssociativeArray(array $array)
+{
+    $sortedArrayKeys = \Functional\sort(
+        array_keys($array),
+        fn($first, $second) => strcmp($first, $second)
+    );
+
+    $result = array_map(
+        function ($key) use ($array) {
+
+            $element = $array[$key];
+
+            //if both are array
+            if (is_array($element)) {
+                $children = transformAssociativeArray($element);
+                return ['key' => $key, "type" => "array", "children" => $children];
+            } else {
+                return ['key' => $key, "type" => "unchanged", "value" => $element];
+            }
+        },
+        $sortedArrayKeys
+    );
+    return $result;
 }
