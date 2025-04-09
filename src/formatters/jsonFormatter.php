@@ -71,6 +71,8 @@ function arrayCastValuesToJson(array $inputArray): array
                 return $elem ? "true" : "false";
             } elseif (is_null($elem)) {
                 return "null";
+            } elseif (is_int($elem)) {
+                return $elem;
             } else {
                 return "\"{$elem}\"";
             }
