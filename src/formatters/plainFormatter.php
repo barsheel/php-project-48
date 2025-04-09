@@ -9,8 +9,7 @@ namespace Differ\Differ\Formatters\PlainFormatter;
  */
 function plainFormatter(array $inputArray): string
 {
-    $array = arrayCastValuesToStringWithQuotes($inputArray);
-    return plainFormatterRecursive($array);
+    return plainFormatterRecursive($inputArray);
 }
 
 /**
@@ -24,58 +23,60 @@ function plainFormatterRecursive(array $inputArray, string $parent = ""): string
 {
     $output = [];
 
-    foreach ($inputArray as $key => $signedElement) {
-        $property = $parent ? "{$parent}.{$key}" : "{$key}";
+    $output = array_reduce(
+        $inputArray,
+        function ($acc, $element) use ($parent) {
+            $key = $element["key"];
+            $property = $parent ? "{$parent}.{$key}" : "{$key}";
 
-        if (isset($signedElement['actualValue']) && is_array($signedElement['actualValue'])) {
-            //if no changes at current element
-            $output[] = plainFormatterRecursive($signedElement['actualValue'], $property);
-        } elseif (isset($signedElement['oldValue']) && isset($signedElement['newValue'])) {
-            //if element was updated
-            $oldValue = is_array($signedElement['oldValue']) ? "[complex value]" : $signedElement['oldValue'];
-            $newValue = is_array($signedElement['newValue']) ? "[complex value]" : $signedElement['newValue'];
-            $output[] = "Property '{$property}' was updated. From {$oldValue} to {$newValue}";
-        } elseif (isset($signedElement['oldValue'])) {
-            //if element was removed
-            $output[] = "Property '{$property}' was removed";
-        } elseif (isset($signedElement['newValue'])) {
-            //if element was added
-            $element = $signedElement['newValue'];
-            if ((is_array($signedElement['newValue']))) {
-                $value = "[complex value]";
-            } else {
-                $value = $element;
+            if ($element["type"] === "unchanged") {
+                return $acc;
             }
-            $output[] = "Property '{$property}' was added with value: {$value}";
-        }
-    }
 
+            if ($element["type"] === "added") {
+                $value = is_array($element["new_value"]) ? "[complex value]" : makeString($element["new_value"]);
+                $acc[] = "Property '{$property}' was added with value: {$value}";
+                return $acc;
+            }
+
+            if ($element["type"] === "removed") {
+                $value = is_array($element["old_value"]) ? "[complex value]" : makeString($element["old_value"]);
+                $acc[] = "Property '{$property}' was removed";
+                return $acc;
+            }
+
+            if ($element["type"] === "changed") {
+                $oldValue = is_array($element["old_value"]) ? "[complex value]" : makeString($element["old_value"]);
+                $newValue = is_array($element["new_value"]) ? "[complex value]" : makeString($element["new_value"]);
+                $acc[] = "Property '{$property}' was updated. From {$oldValue} to {$newValue}";
+                return $acc;
+            }
+
+            if ($element["type"] === "array") {
+                $acc[] = plainFormatterRecursive($element['children'], $property);
+                return $acc;
+            }
+        },
+        []
+    );
 
     return implode("\n", $output);
 }
 
 /**
- * сast all values in array to plain style - it's prepare diff array for output
- *
- * @param array $inputArray
- * @return array
+ * transform value to correct string form
+ * @param mixed $elem
+ * @return string
  */
-function arrayCastValuesToStringWithQuotes(array $inputArray): array
+function makeString(mixed $elem): string
 {
-    return array_map(
-        function ($elem) {
-            if (is_array($elem)) {
-                return arrayCastValuesToStringWithQuotes($elem);
-            } elseif (is_bool($elem)) {
-                return $elem ? "true" : "false";
-            } elseif (is_null($elem)) {
-                return "null";
-            } elseif (is_int($elem)) {
-                return $elem;
-            } else {
-                return "'{$elem}'";
-            }
-        },
-        $inputArray
-    );
+    if (is_bool($elem)) {
+        return $elem ? "true" : "false";
+    } elseif (is_null($elem)) {
+        return "null";
+    } elseif (is_int($elem)) {
+        return "{$elem}";
+    } else {
+        return "'{$elem}'";
+    }
 }
