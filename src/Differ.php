@@ -26,7 +26,7 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $format = "sty
 
     $output = format($diffArray, $format);
 
-    file_put_contents("output", $output);
+    
     return $output;
 }
 
@@ -60,9 +60,9 @@ function arrayDiffRecursive(array $fileArray1, array $fileArray2): array
                 return ['key' => $key, "type" => "array", "children" => $children];
             }
             if ($isArrayFirst) {
-                $elementFromFirst = transformAssociativeArray($elementFromFirst);
+                $elementFromFirst = transformAssociativeArray($fileArray1[$key]);
             } elseif ($isArraySecond) {
-                $elementFromSecond = transformAssociativeArray($elementFromSecond);
+                $elementFromSecond = transformAssociativeArray($fileArray2[$key]);
             }
             if ($isExistsInFirst && $isExistsInSecond) {
                 if ($elementFromFirst === $elementFromSecond) {
@@ -82,8 +82,12 @@ function arrayDiffRecursive(array $fileArray1, array $fileArray2): array
     );
     return $result;
 }
-
-function transformAssociativeArray(array $array)
+/**
+ * Transfrom array to internal form
+ * @param array $array
+ * @return array
+ */
+function transformAssociativeArray(array $array): array
 {
     $sortedArrayKeys = \Functional\sort(
         array_keys($array),

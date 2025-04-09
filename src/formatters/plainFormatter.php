@@ -21,13 +21,13 @@ function plainFormatter(array $inputArray): string
  */
 function plainFormatterRecursive(array $inputArray, string $parent = ""): string
 {
-    $output = [];
+    
 
     $output = array_reduce(
         $inputArray,
         function ($acc, $element) use ($parent) {
             $key = $element["key"];
-            $property = $parent ? "{$parent}.{$key}" : "{$key}";
+            $property = ($parent !== "") ? "{$parent}.{$key}" : "{$key}";
 
             if ($element["type"] === "unchanged") {
                 return $acc;
@@ -35,26 +35,26 @@ function plainFormatterRecursive(array $inputArray, string $parent = ""): string
 
             if ($element["type"] === "added") {
                 $value = is_array($element["new_value"]) ? "[complex value]" : makeString($element["new_value"]);
-                $acc[] = "Property '{$property}' was added with value: {$value}";
-                return $acc;
+                $append = "Property '{$property}' was added with value: {$value}";
+                return [...$acc, $append];
             }
 
             if ($element["type"] === "removed") {
                 $value = is_array($element["old_value"]) ? "[complex value]" : makeString($element["old_value"]);
-                $acc[] = "Property '{$property}' was removed";
-                return $acc;
+                $append = "Property '{$property}' was removed";
+                return [...$acc, $append];
             }
 
             if ($element["type"] === "changed") {
                 $oldValue = is_array($element["old_value"]) ? "[complex value]" : makeString($element["old_value"]);
                 $newValue = is_array($element["new_value"]) ? "[complex value]" : makeString($element["new_value"]);
-                $acc[] = "Property '{$property}' was updated. From {$oldValue} to {$newValue}";
-                return $acc;
+                $append = "Property '{$property}' was updated. From {$oldValue} to {$newValue}";
+                return [...$acc, $append];
             }
 
             if ($element["type"] === "array") {
-                $acc[] = plainFormatterRecursive($element['children'], $property);
-                return $acc;
+                $append = plainFormatterRecursive($element['children'], $property);
+                return [...$acc, $append];
             }
         },
         []

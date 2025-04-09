@@ -44,8 +44,8 @@ function parseYamlFile(string $path): array
  */
 function parseJsonFile(string $path): array
 {
-    $path = buildPath($path);
-    $fileContent = file_get_contents($path);
+    $buildedPath = buildPath($path);
+    $fileContent = file_get_contents($buildedPath);
     $data = json_decode($fileContent);
     return get_object_vars_recursive($data);
 }
@@ -67,15 +67,19 @@ function get_object_vars_recursive(stdClass $data): array
 }
 
 /**
- * Convert filename to absolute path if its relative
+ * Summary of Differ\Differ\Parsers\buildPath
+ *  * Convert filename to absolute path if its relative
  *
  * @param  string $path - path or filename
  * @return string absolute path
+ * @throws \Exception
  */
-function buildPath(string $path): string
+function buildPath(string $path): string|false
 {
     $realPath = realpath($path);
-    if (is_file($realPath)) {
+    if (!$realPath) {
+        throw new Exception("\nNo such file\n");
+    } elseif (is_file($realPath)) {
         return $realPath;
     }
     $currentDirectory = dirname(__DIR__) . "/" . $path;

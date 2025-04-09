@@ -26,21 +26,21 @@ function jsonFormatterRecursive(array $inputArray, int $offsetLevel = 0): string
 {
     $parentOffset = str_repeat(PRINT_ARRAY_BASE_OFFSET, $offsetLevel);
     $elementOffset = str_repeat(PRINT_ARRAY_BASE_OFFSET, $offsetLevel + 1);
-    $output = [];
 
     $output = array_reduce(
         array_keys($inputArray),
         function ($acc, $key) use ($inputArray, $elementOffset, $offsetLevel) {
             $element = $inputArray[$key];
             if (!is_array($element)) {
-                $acc[] = "{$elementOffset}\"{$key}\": {$element}";
-                return $acc;
+                
+                $append = "{$elementOffset}\"{$key}\": {$element}";
+                return [...$acc, $append];
             } elseif (array_is_list($inputArray)) {
-                $acc[] = implode("", [$elementOffset, jsonFormatterRecursive($element, $offsetLevel + 1)]);
-                return $acc;
+                $append = implode("", [$elementOffset, jsonFormatterRecursive($element, $offsetLevel + 1)]);
+                return [...$acc, $append];
             } else {
-                $acc[] = implode("", [$elementOffset, "\"{$key}\": ", jsonFormatterRecursive($element, $offsetLevel + 1)]);
-                return $acc;
+                $append = implode("", [$elementOffset, "\"{$key}\": ", jsonFormatterRecursive($element, $offsetLevel + 1)]);
+                return [...$acc, $append];
             }
         },
         []

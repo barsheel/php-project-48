@@ -32,7 +32,7 @@ function stylishFormatterRecursive(mixed $input, int $offsetLevel = 0): string
     //if got indexed array
     $parentOffset = str_repeat(PRINT_ARRAY_BASE_OFFSET, $offsetLevel * 2);
     $elementOffset = str_repeat(PRINT_ARRAY_BASE_OFFSET, $offsetLevel * 2 + 1);
-    $result = [];
+
 
     $result = array_reduce(
         $input,
@@ -40,21 +40,21 @@ function stylishFormatterRecursive(mixed $input, int $offsetLevel = 0): string
             $key = $item["key"];
             switch ($item["type"]) {
                 case "unchanged":
-                    $acc[] = implode([$elementOffset, "  ", $item["key"], ": ", stylishFormatterRecursive($item["value"], $offsetLevel + 1)]);
-                    return $acc;
+                    $append = implode([$elementOffset, "  ", $item["key"], ": ", stylishFormatterRecursive($item["value"], $offsetLevel + 1)]);
+                    return [...$acc, $append];
                 case "added":
-                    $acc[] = implode([$elementOffset, "+ ", $item["key"], ": ", stylishFormatterRecursive($item["new_value"], $offsetLevel + 1)]);
-                    return $acc;
+                    $append = implode([$elementOffset, "+ ", $item["key"], ": ", stylishFormatterRecursive($item["new_value"], $offsetLevel + 1)]);
+                    return [...$acc, $append];
                 case "removed":
-                    $acc[] = implode([$elementOffset, "- ", $item["key"], ": ", stylishFormatterRecursive($item["old_value"], $offsetLevel + 1)]);
-                    return $acc;
+                    $append = implode([$elementOffset, "- ", $item["key"], ": ", stylishFormatterRecursive($item["old_value"], $offsetLevel + 1)]);
+                    return [...$acc, $append];
                 case "changed":
-                    $acc[] = implode([$elementOffset, "- ", $item["key"], ": ", stylishFormatterRecursive($item["old_value"], $offsetLevel + 1)]);
-                    $acc[] = implode([$elementOffset, "+ ", $item["key"], ": ", stylishFormatterRecursive($item["new_value"], $offsetLevel + 1)]);
-                    return $acc;
+                    $append1 = implode([$elementOffset, "- ", $item["key"], ": ", stylishFormatterRecursive($item["old_value"], $offsetLevel + 1)]);
+                    $append2 = implode([$elementOffset, "+ ", $item["key"], ": ", stylishFormatterRecursive($item["new_value"], $offsetLevel + 1)]);
+                    return [...$acc, $append1, $append2];
                 case "array":
-                    $acc[] = implode([$elementOffset, "  ", $item["key"], ": ", stylishFormatterRecursive($item["children"], $offsetLevel + 1)]);
-                    return $acc;
+                    $append = implode([$elementOffset, "  ", $item["key"], ": ", stylishFormatterRecursive($item["children"], $offsetLevel + 1)]);
+                    return [...$acc, $append];
             }
             return $acc;
         },
