@@ -1,98 +1,152 @@
-{
-  "common": {
-    "actualValue": {
-      "follow": {
-        "newValue": false
+[
+  {
+    "key": "common",
+    "type": "array",
+    "children": [
+      {
+        "key": "follow",
+        "type": "added",
+        "new_value": false
       },
-      "setting1": {
-        "actualValue": "Value 1"
+      {
+        "key": "setting1",
+        "type": "unchanged",
+        "value": "Value 1"
       },
-      "setting2": {
-        "oldValue": "200"
+      {
+        "key": "setting2",
+        "type": "removed",
+        "old_value": "200"
       },
-      "setting3": {
-        "oldValue": true,
-        "newValue": null
+      {
+        "key": "setting3",
+        "type": "changed",
+        "old_value": true,
+        "new_value": null
       },
-      "setting4": {
-        "newValue": "blah blah"
+      {
+        "key": "setting4",
+        "type": "added",
+        "new_value": "blah blah"
       },
-      "setting5": {
-        "newValue": {
-          "key5": {
-            "actualValue": "value5"
+      {
+        "key": "setting5",
+        "type": "added",
+        "new_value": [
+          {
+            "key": "key5",
+            "type": "unchanged",
+            "value": "value5"
           }
-        }
+        ]
       },
-      "setting6": {
-        "actualValue": {
-          "doge": {
-            "actualValue": {
-              "wow": {
-                "oldValue": "",
-                "newValue": "so much"
+      {
+        "key": "setting6",
+        "type": "array",
+        "children": [
+          {
+            "key": "doge",
+            "type": "array",
+            "children": [
+              {
+                "key": "wow",
+                "type": "changed",
+                "old_value": "",
+                "new_value": "so much"
               }
-            }
+            ]
           },
-          "key": {
-            "actualValue": "value"
+          {
+            "key": "key",
+            "type": "unchanged",
+            "value": "value"
           },
-          "ops": {
-            "newValue": "vops"
+          {
+            "key": "ops",
+            "type": "added",
+            "new_value": "vops"
           }
-        }
+        ]
       }
-    }
+    ]
   },
-  "group1": {
-    "actualValue": {
-      "baz": {
-        "oldValue": "bas",
-        "newValue": "bars"
+  {
+    "key": "group1",
+    "type": "array",
+    "children": [
+      {
+        "key": "baz",
+        "type": "changed",
+        "old_value": "bas",
+        "new_value": "bars"
       },
-      "foo": {
-        "actualValue": "bar"
+      {
+        "key": "foo",
+        "type": "unchanged",
+        "value": "bar"
       },
-      "nest": {
-        "oldValue": {
-          "key": {
-            "actualValue": "value"
+      {
+        "key": "nest",
+        "type": "changed",
+        "old_value": [
+          {
+            "key": "key",
+            "type": "unchanged",
+            "value": "value"
           }
-        },
-        "newValue": "str"
+        ],
+        "new_value": "str"
       }
-    }
+    ]
   },
-  "group2": {
-    "oldValue": {
-      "abc": {
-        "actualValue": "12345"
+  {
+    "key": "group2",
+    "type": "removed",
+    "old_value": [
+      {
+        "key": "abc",
+        "type": "unchanged",
+        "value": "12345"
       },
-      "deep": {
-        "actualValue": {
-          "id": {
-            "actualValue": "45"
+      {
+        "key": "deep",
+        "type": "array",
+        "children": [
+          {
+            "key": "id",
+            "type": "unchanged",
+            "value": "45"
           }
-        }
+        ]
       }
-    }
+    ]
   },
-  "group3": {
-    "newValue": {
-      "deep": {
-        "actualValue": {
-          "id": {
-            "actualValue": {
-              "number": {
-                "actualValue": "45"
+  {
+    "key": "group3",
+    "type": "added",
+    "new_value": [
+      {
+        "key": "deep",
+        "type": "array",
+        "children": [
+          {
+            "key": "id",
+            "type": "array",
+            "children": [
+              {
+                "key": "number",
+                "type": "unchanged",
+                "value": "45"
               }
-            }
+            ]
           }
-        }
+        ]
       },
-      "fee": {
-        "actualValue": "100500"
+      {
+        "key": "fee",
+        "type": "unchanged",
+        "value": "100500"
       }
-    }
+    ]
   }
-}
+]
