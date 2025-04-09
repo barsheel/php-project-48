@@ -1,6 +1,6 @@
 <?php
 
-namespace Php\Project48\Formatters\PlainFormatter;
+namespace Differ\Differ\Formatters\PlainFormatter;
 
 /**
  * convert diff array to plain-style text

@@ -1,6 +1,6 @@
 <?php
 
-namespace Php\Project48\Gendiff\Tests;
+namespace Differ\Differ\Tests;
 
 use PHPUnit\Framework\TestCase;
 
@@ -18,15 +18,15 @@ final class DifferTest extends TestCase
         $file1 = $this->getFixture("file3.json");
         $file2 = $this->getFixture("file4.json");
 
-        $expectedResultStylish = file_get_contents(GendiffTest::getFixture("expected_result_stylish"));
+        $expectedResultStylish = file_get_contents(DifferTest::getFixture("expected_result_stylish"));
         $result = genDiff($file1, $file2, "stylish");
         $this -> assertEquals($expectedResultStylish, $result);
 
-        $expectedResultPlain = file_get_contents(GendiffTest::getFixture("expected_result_plain"));
+        $expectedResultPlain = file_get_contents(DifferTest::getFixture("expected_result_plain"));
         $result = genDiff($file1, $file2, "plain");
         $this -> assertEquals($expectedResultPlain, $result);
 
-        $expectedResultJson = file_get_contents(GendiffTest::getFixture("expected_result_json"));
+        $expectedResultJson = file_get_contents(DifferTest::getFixture("expected_result_json"));
         $result = genDiff($file1, $file2, "json");
         $this -> assertEquals($expectedResultJson, $result);
     }
@@ -36,15 +36,15 @@ final class DifferTest extends TestCase
         $file1 = $this->getFixture("file3.yml");
         $file2 = $this->getFixture("file4.yml");
 
-        $expectedResultStylish = file_get_contents(GendiffTest::getFixture("expected_result_stylish"));
+        $expectedResultStylish = file_get_contents(DifferTest::getFixture("expected_result_stylish"));
         $result = genDiff($file1, $file2, "stylish");
         $this -> assertEquals($expectedResultStylish, $result);
 
-        $expectedResultPlain = file_get_contents(GendiffTest::getFixture("expected_result_plain"));
+        $expectedResultPlain = file_get_contents(DifferTest::getFixture("expected_result_plain"));
         $result = genDiff($file1, $file2, "plain");
         $this -> assertEquals($expectedResultPlain, $result);
 
-        $expectedResultJson = file_get_contents(GendiffTest::getFixture("expected_result_json"));
+        $expectedResultJson = file_get_contents(DifferTest::getFixture("expected_result_json"));
         $result = genDiff($file1, $file2, "json");
         $this -> assertEquals($expectedResultJson, $result);
     }

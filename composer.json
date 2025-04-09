@@ -11,11 +11,11 @@
     "autoload": {
         "files": [
             "src/Differ.php",
-            "src/parsers.php",
-            "src/formatters.php",
-            "src/formatters/plainFormatter.php",
-            "src/formatters/stylishFormatter.php",
-            "src/formatters/jsonFormatter.php"
+            "src/Parsers.php",
+            "src/Formatters.php",
+            "src/formatters/PlainFormatter.php",
+            "src/formatters/StylishFormatter.php",
+            "src/formatters/JsonFormatter.php"
         ],
         "psr-4": {
             "Hexlet\\Code\\": "src/"

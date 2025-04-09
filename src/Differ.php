@@ -6,8 +6,8 @@
 
 namespace Differ\Differ;
 
-use function PHP\Project48\Parsers\parseFile;
-use function PHP\Project48\Formatters\format;
+use function Differ\Differ\Parsers\parseFile;
+use function Differ\Differ\Formatters\format;
 
 /**
  * Compare two files and return difference

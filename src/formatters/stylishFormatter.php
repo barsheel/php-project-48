@@ -1,6 +1,6 @@
 <?php
 
-namespace Php\Project48\Formatters\StylishFormatter;
+namespace Differ\Differ\Formatters\StylishFormatter;
 
 /**
  * convert diff array to stylish-style text

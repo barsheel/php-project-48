@@ -1,6 +1,6 @@
 <?php
 
-namespace PHP\Project48\Parsers;
+namespace Differ\Differ\Parsers;
 
 use Exception;
 use stdClass;

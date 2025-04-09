@@ -1,12 +1,12 @@
 <?php
 
-namespace PHP\Project48\Formatters;
+namespace Differ\Differ\Formatters;
 
 use Exception;
 
-use function PHP\Project48\Formatters\PlainFormatter\plainFormatter;
-use function PHP\Project48\Formatters\StylishFormatter\stylishFormatter;
-use function PHP\Project48\Formatters\JsonFormatter\jsonFormatter;
+use function Differ\Differ\Formatters\PlainFormatter\plainFormatter;
+use function Differ\Differ\Formatters\StylishFormatter\stylishFormatter;
+use function Differ\Differ\Formatters\JsonFormatter\jsonFormatter;
 
 /**
  * function calls formatter functions

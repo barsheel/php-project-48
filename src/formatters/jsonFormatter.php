@@ -1,6 +1,6 @@
 <?php
 
-namespace Php\Project48\Formatters\JsonFormatter;
+namespace Differ\Differ\Formatters\JsonFormatter;
 
 /**
  * convert diff array to json-style text
