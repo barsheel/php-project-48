@@ -2,6 +2,8 @@
 
 namespace Differ\Differ\Formatters\JsonFormatter;
 
+const PRINT_ARRAY_BASE_OFFSET = "  ";
+
 /**
  * convert diff array to json-style text
  * @param array $inputArray
@@ -22,25 +24,35 @@ function jsonFormatter(array $inputArray): string
  */
 function jsonFormatterRecursive(array $inputArray, int $offsetLevel = 0): string
 {
-    $PRINT_ARRAY_BASE_OFFSET = "  ";
-
-    $parentOffset = str_repeat($PRINT_ARRAY_BASE_OFFSET, $offsetLevel);
-    $elementOffset = "{$parentOffset}{$PRINT_ARRAY_BASE_OFFSET}";
+    $parentOffset = str_repeat(PRINT_ARRAY_BASE_OFFSET, $offsetLevel);
+    $elementOffset = str_repeat(PRINT_ARRAY_BASE_OFFSET, $offsetLevel + 1);
     $output = [];
-    $prefix = "";
 
-    foreach ($inputArray as $key => $signedElement) {
-            $childElement = $inputArray[$key];
-            $value = is_array($childElement)
-            ? jsonFormatterRecursive($childElement, $offsetLevel + 1)
-            : $childElement;
-
-            $output[] = "{$elementOffset}\"{$key}\": {$value}";
-    }
+    $output = array_reduce(
+        array_keys($inputArray),
+        function ($acc, $key) use ($inputArray, $elementOffset, $offsetLevel) {
+            $element = $inputArray[$key];
+            if (!is_array($element)) {
+                $acc[] = "{$elementOffset}\"{$key}\": {$element}";
+                return $acc;
+            } elseif (array_is_list($inputArray)) {
+                $acc[] = implode("", [$elementOffset, jsonFormatterRecursive($element, $offsetLevel + 1)]);
+                return $acc;
+            } else {
+                $acc[] = implode("", [$elementOffset, "\"{$key}\": ", jsonFormatterRecursive($element, $offsetLevel + 1)]);
+                return $acc;
+            }
+        },
+        []
+    );
 
     $outputStr = implode(",\n", $output);
 
-    return "{\n" . $outputStr . "\n{$parentOffset}}";
+    if (array_is_list($inputArray)) {
+        return implode("", ["[\n" , $outputStr , "\n{$parentOffset}]"]);
+    } else {
+        return implode("", ["{\n" , $outputStr , "\n{$parentOffset}}"]);
+    }
 }
 
 /**
