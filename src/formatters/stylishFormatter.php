@@ -6,7 +6,7 @@ const PRINT_ARRAY_BASE_OFFSET = "  ";
 
 /**
  * convert diff array to stylish-style text
- * @param array $input
+ * @param array $inputArray
  * @return string
  */
 function stylishFormatter(array $inputArray): string
