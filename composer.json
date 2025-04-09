@@ -29,7 +29,8 @@
     ],
     "require": {
         "docopt/docopt": "^1.0",
-        "symfony/yaml": "^7.2"
+        "symfony/yaml": "^7.2",
+        "lstrojny/functional-php": "^1.17"
     },
     "require-dev": {
         "phpstan/phpstan": "^2.1",
