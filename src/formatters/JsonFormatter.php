@@ -32,7 +32,6 @@ function jsonFormatterRecursive(array $inputArray, int $offsetLevel = 0): string
         function ($acc, $key) use ($inputArray, $elementOffset, $offsetLevel) {
             $element = $inputArray[$key];
             if (!is_array($element)) {
-                
                 $append = "{$elementOffset}\"{$key}\": {$element}";
                 return [...$acc, $append];
             } elseif (array_is_list($inputArray)) {

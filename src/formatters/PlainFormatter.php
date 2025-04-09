@@ -21,7 +21,7 @@ function plainFormatter(array $inputArray): string
  */
 function plainFormatterRecursive(array $inputArray, string $parent = ""): string
 {
-    
+
 
     $output = array_reduce(
         $inputArray,

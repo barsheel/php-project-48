@@ -26,7 +26,7 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $format = "sty
 
     $output = format($diffArray, $format);
 
-    
+
     return $output;
 }
 
