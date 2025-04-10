@@ -12,7 +12,7 @@ const PRINT_ARRAY_BASE_OFFSET = "  ";
 function jsonFormatter(array $inputArray): string
 {
     $array = arrayCastValuesToJson($inputArray);
-    return jsonFormatterRecursive($array);
+    return recursive($array);
 }
 
 /**
@@ -22,7 +22,7 @@ function jsonFormatter(array $inputArray): string
  * @param  integer $offsetLevel       - needs to construct indent
  * @return string
  */
-function jsonFormatterRecursive(array $inputArray, int $offsetLevel = 0): string
+function recursive(array $inputArray, int $offsetLevel = 0): string
 {
     $parentOffset = str_repeat(PRINT_ARRAY_BASE_OFFSET, $offsetLevel);
     $elementOffset = str_repeat(PRINT_ARRAY_BASE_OFFSET, $offsetLevel + 1);
@@ -35,10 +35,10 @@ function jsonFormatterRecursive(array $inputArray, int $offsetLevel = 0): string
                 $append = "{$elementOffset}\"{$key}\": {$element}";
                 return [...$acc, $append];
             } elseif (array_is_list($inputArray)) {
-                $append = implode("", [$elementOffset, jsonFormatterRecursive($element, $offsetLevel + 1)]);
+                $append = implode("", [$elementOffset, recursive($element, $offsetLevel + 1)]);
                 return [...$acc, $append];
             } else {
-                $append = implode("", [$elementOffset, "\"{$key}\": ", jsonFormatterRecursive($element, $offsetLevel + 1)]);
+                $append = implode("", [$elementOffset, "\"{$key}\": ", recursive($element, $offsetLevel + 1)]);
                 return [...$acc, $append];
             }
         },

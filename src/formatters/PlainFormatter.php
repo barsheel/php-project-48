@@ -9,7 +9,7 @@ namespace Differ\Differ\Formatters\PlainFormatter;
  */
 function plainFormatter(array $inputArray): string
 {
-    return plainFormatterRecursive($inputArray);
+    return recursive($inputArray);
 }
 
 /**
@@ -19,7 +19,7 @@ function plainFormatter(array $inputArray): string
  * @param string $parent
  * @return string
  */
-function plainFormatterRecursive(array $inputArray, string $parent = ""): string
+function recursive(array $inputArray, string $parent = ""): string
 {
 
 
@@ -53,7 +53,7 @@ function plainFormatterRecursive(array $inputArray, string $parent = ""): string
             }
 
             if ($element["type"] === "array") {
-                $append = plainFormatterRecursive($element['children'], $property);
+                $append = recursive($element['children'], $property);
                 return [...$acc, $append];
             }
         },
