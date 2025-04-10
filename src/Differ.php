@@ -26,7 +26,6 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $format = "sty
 
     $output = format($diffArray, $format);
 
-
     return $output;
 }
 
@@ -59,23 +58,22 @@ function arrayDiffRecursive(array $fileArray1, array $fileArray2): array
                 $children = arrayDiffRecursive($elementFromFirst, $elementFromSecond);
                 return ['key' => $key, "type" => "array", "children" => $children];
             }
-            if ($isArrayFirst) {
-                $elementFromFirst = transformAssociativeArray($fileArray1[$key]);
-            } elseif ($isArraySecond) {
-                $elementFromSecond = transformAssociativeArray($fileArray2[$key]);
-            }
+
+            $oldValue = $isArrayFirst ? transformAssociativeArray($elementFromFirst) : $elementFromFirst;
+            $newValue = $isArraySecond ? transformAssociativeArray($elementFromSecond) : $elementFromSecond;
+
             if ($isExistsInFirst && $isExistsInSecond) {
                 if ($elementFromFirst === $elementFromSecond) {
-                    return ['key' => $key, "type" => "unchanged", "value" => $elementFromFirst];
+                    return ['key' => $key, "type" => "unchanged", "value" => $oldValue];
                 } else {
-                    return ['key' => $key, "type" => "changed", "old_value" => $elementFromFirst, "new_value" => $elementFromSecond];
+                    return ['key' => $key, "type" => "changed", "old_value" => $oldValue, "new_value" => $newValue];
                 }
             }
             if ($isExistsInFirst) {
-                return ['key' => $key, "type" => "removed", "old_value" => $elementFromFirst];
+                return ['key' => $key, "type" => "removed", "old_value" => $oldValue];
             }
             if ($isExistsInSecond) {
-                return ['key' => $key, "type" => "added", "new_value" => $elementFromSecond];
+                return ['key' => $key, "type" => "added", "new_value" => $newValue];
             }
         },
         $sortedArrayKeys

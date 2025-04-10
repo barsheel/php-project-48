@@ -40,12 +40,16 @@ function parseYamlFile(string $path): array
  * Parse JSON file and return it in array form
  *
  * @param  string $path - filename
+ * @throws Exception
  * @return array
  */
 function parseJsonFile(string $path): array
 {
     $buildedPath = buildPath($path);
     $fileContent = file_get_contents($buildedPath);
+    if ($fileContent === false) {
+        throw new Exception("Can't get contents");
+    }
     $data = json_decode($fileContent);
     return get_object_vars_recursive($data);
 }
@@ -74,10 +78,10 @@ function get_object_vars_recursive(stdClass $data): array
  * @return string absolute path
  * @throws \Exception
  */
-function buildPath(string $path): string|false
+function buildPath(string $path): string
 {
     $realPath = realpath($path);
-    if (!$realPath) {
+    if ($realPath === false) {
         throw new Exception("\nNo such file\n");
     } elseif (is_file($realPath)) {
         return $realPath;
