@@ -7,9 +7,14 @@
 namespace Differ\Differ;
 
 use Functional;
+use Exception;
 
-use function Differ\Differ\Parsers\parseFile;
 use function Differ\Differ\Formatters\format;
+use function Differ\Differ\Parsers\parseYaml;
+use function Differ\Differ\Parsers\parseJson;
+use function Differ\Differ\Files\getContent;
+use function Differ\Differ\Files\isJsonFilename;
+use function Differ\Differ\Files\isYamlFilename;
 
 /**
  * Compare two files and return difference
@@ -20,11 +25,22 @@ use function Differ\Differ\Formatters\format;
  */
 function genDiff(string $pathToFile1, string $pathToFile2, string $format = "stylish"): string
 {
-    $fileArray1 = (parseFile($pathToFile1));
-    $fileArray2 = (parseFile($pathToFile2));
-    $diffArray = arrayDiffRecursive($fileArray1, $fileArray2);
+    $file1Content = getContent($pathToFile1);
+    $file2Content = getContent($pathToFile2);
 
-    $output = format($diffArray, $format);
+    if (isJsonFilename($pathToFile1) && isJsonFilename($pathToFile2)) {
+        $file1AST = parseJson($file1Content);
+        $file2AST = parseJson($file2Content);
+    } elseif (isYamlFilename($pathToFile1) && isYamlFilename($pathToFile2)) {
+        $file1AST = parseYaml($file1Content);
+        $file2AST = parseYaml($file2Content);
+    } else {
+        throw new Exception("not a JSON or YAML file");
+    }
+
+    $diffAST = arrayDiffRecursive($file1AST, $file2AST);
+
+    $output = format($diffAST, $format);
 
     return $output;
 }
@@ -38,9 +54,9 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $format = "sty
  */
 function arrayDiffRecursive(array $fileArray1, array $fileArray2): array
 {
-    $mergedArray = array_merge($fileArray1, $fileArray2);
-    $sortedArrayKeys = \Functional\sort(
-        array_keys($mergedArray),
+    $diffASTKeys = array_keys(array_merge($fileArray1, $fileArray2));
+    $sortedDiffASTKeys = \Functional\sort(
+        $diffASTKeys,
         fn($first, $second) => strcmp($first, $second)
     );
 
@@ -53,59 +69,35 @@ function arrayDiffRecursive(array $fileArray1, array $fileArray2): array
             $isArrayFirst = is_array($elementFromFirst);
             $isArraySecond = is_array($elementFromSecond);
 
-            //if both are array
+            //if both elements are array - calculate difference
             if ($isArrayFirst && $isArraySecond) {
                 $children = arrayDiffRecursive($elementFromFirst, $elementFromSecond);
                 return ['key' => $key, "type" => "array", "children" => $children];
             }
 
-            $oldValue = $isArrayFirst ? transformAssociativeArray($elementFromFirst) : $elementFromFirst;
-            $newValue = $isArraySecond ? transformAssociativeArray($elementFromSecond) : $elementFromSecond;
+            //If only one element is array - transform it in internal form
+            $oldValue = $isArrayFirst
+                ? arrayDiffRecursive($elementFromFirst, $elementFromFirst)
+                : $elementFromFirst;
+            $newValue = $isArraySecond
+                ? arrayDiffRecursive($elementFromSecond, $elementFromSecond)
+                : $elementFromSecond;
 
-            if ($isExistsInFirst && $isExistsInSecond) {
-                if ($elementFromFirst === $elementFromSecond) {
-                    return ['key' => $key, "type" => "unchanged", "value" => $oldValue];
-                } else {
-                    return ['key' => $key, "type" => "changed", "old_value" => $oldValue, "new_value" => $newValue];
-                }
-            }
-            if ($isExistsInFirst) {
+            //if added or removed
+            if (!$isExistsInSecond) {
                 return ['key' => $key, "type" => "removed", "old_value" => $oldValue];
-            }
-            if ($isExistsInSecond) {
+            } elseif (!$isExistsInFirst) {
                 return ['key' => $key, "type" => "added", "new_value" => $newValue];
             }
-        },
-        $sortedArrayKeys
-    );
-    return $result;
-}
-/**
- * Transfrom array to internal form
- * @param array $array
- * @return array
- */
-function transformAssociativeArray(array $array): array
-{
-    $sortedArrayKeys = \Functional\sort(
-        array_keys($array),
-        fn($first, $second) => strcmp($first, $second)
-    );
 
-    $result = array_map(
-        function ($key) use ($array) {
-
-            $element = $array[$key];
-
-            //if both are array
-            if (is_array($element)) {
-                $children = transformAssociativeArray($element);
-                return ['key' => $key, "type" => "array", "children" => $children];
+            //if values exist in both arrays
+            if ($elementFromFirst === $elementFromSecond) {
+                return ['key' => $key, "type" => "unchanged", "value" => $oldValue];
             } else {
-                return ['key' => $key, "type" => "unchanged", "value" => $element];
+                return ['key' => $key, "type" => "changed", "old_value" => $oldValue, "new_value" => $newValue];
             }
         },
-        $sortedArrayKeys
+        $sortedDiffASTKeys
     );
     return $result;
 }
