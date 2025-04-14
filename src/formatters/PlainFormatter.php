@@ -21,40 +21,31 @@ function plainFormatter(array $inputArray): string
  */
 function recursive(array $inputArray, string $parent = ""): string
 {
-
-
     $output = array_reduce(
         $inputArray,
         function ($acc, $element) use ($parent) {
             $key = $element["key"];
             $property = ($parent !== "") ? "{$parent}.{$key}" : "{$key}";
 
-            if ($element["type"] === "unchanged") {
-                return $acc;
-            }
-
-            if ($element["type"] === "added") {
-                $value = is_array($element["new_value"]) ? "[complex value]" : makeString($element["new_value"]);
-                $append = "Property '{$property}' was added with value: {$value}";
-                return [...$acc, $append];
-            }
-
-            if ($element["type"] === "removed") {
-                $value = is_array($element["old_value"]) ? "[complex value]" : makeString($element["old_value"]);
-                $append = "Property '{$property}' was removed";
-                return [...$acc, $append];
-            }
-
-            if ($element["type"] === "changed") {
-                $oldValue = is_array($element["old_value"]) ? "[complex value]" : makeString($element["old_value"]);
-                $newValue = is_array($element["new_value"]) ? "[complex value]" : makeString($element["new_value"]);
-                $append = "Property '{$property}' was updated. From {$oldValue} to {$newValue}";
-                return [...$acc, $append];
-            }
-
-            if ($element["type"] === "array") {
-                $append = recursive($element['children'], $property);
-                return [...$acc, $append];
+            switch ($element["type"]) {
+                case "unchanged":
+                    return $acc;
+                case "added":
+                    $value = is_array($element["new_value"]) ? "[complex value]" : makeString($element["new_value"]);
+                    $append = "Property '{$property}' was added with value: {$value}";
+                    return [...$acc, $append];
+                case "removed":
+                    $value = is_array($element["old_value"]) ? "[complex value]" : makeString($element["old_value"]);
+                    $append = "Property '{$property}' was removed";
+                    return [...$acc, $append];
+                case "changed":
+                    $oldValue = is_array($element["old_value"]) ? "[complex value]" : makeString($element["old_value"]);
+                    $newValue = is_array($element["new_value"]) ? "[complex value]" : makeString($element["new_value"]);
+                    $append = "Property '{$property}' was updated. From {$oldValue} to {$newValue}";
+                    return [...$acc, $append];
+                case "array":
+                    $append = recursive($element['children'], $property);
+                    return [...$acc, $append];
             }
         },
         []

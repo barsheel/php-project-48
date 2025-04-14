@@ -2,6 +2,8 @@
 
 namespace Differ\Differ\Formatters;
 
+use Exception;
+
 use function Differ\Differ\Formatters\PlainFormatter\plainFormatter;
 use function Differ\Differ\Formatters\StylishFormatter\stylishFormatter;
 use function Differ\Differ\Formatters\JsonFormatter\jsonFormatter;
@@ -22,6 +24,6 @@ function format(array $inputArray, string $formatter): string
         case "json":
             return jsonFormatter($inputArray);
         default:
-            return "\nNo such formatter\n";
+            throw new Exception("\nNo such formatter\n");
     }
 }
