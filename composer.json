@@ -13,6 +13,7 @@
             "src/Differ.php",
             "src/Parsers.php",
             "src/Formatters.php",
+            "src/Files.php",
             "src/formatters/PlainFormatter.php",
             "src/formatters/StylishFormatter.php",
             "src/formatters/JsonFormatter.php"
