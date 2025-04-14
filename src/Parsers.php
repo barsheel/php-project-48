@@ -14,7 +14,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 function parseYaml(string $data): array
 {
-    return $data = Yaml::parse($data, Yaml::PARSE_OBJECT);
+    return Yaml::parse($data, Yaml::PARSE_OBJECT);
 }
 
 /**
