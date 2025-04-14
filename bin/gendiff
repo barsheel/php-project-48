@@ -31,7 +31,6 @@ $args = Docopt::handle($doc, array('version'=>'version 1.0'));
 }
 */
 
-if ($args["<firstFile>"] && $args["<secondFile>"]) {
 	$result = genDiff((string)$args["<firstFile>"], (string)$args["<secondFile>"], $args["--format"]);
 	print_r($result);
-}
+
